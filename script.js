@@ -1,7 +1,3 @@
-
-
-
-
 const songs = [
   {
     title: "Backbite",
@@ -101,11 +97,19 @@ function playSong(index) {
   currentSongIndex = index;
   audioPlayer.src = songs[index].file;
   audioPlayer.play();
-  playPauseBtn.src = "./assets/pause_icon.png"; // Update icon to pause
+  playPauseBtn.src = "./assets/images (1).png"; // Update icon to pause
+  highlightCurrentSong(index);
 
   // Update total duration when metadata loads
-  audioPlayer.addEventListener("loadedmetadata", () => {
+  audioPlayer.onloadedmetadata = () => {
     totTimeDisplay.textContent = formatTime(audioPlayer.duration);
+  };
+}
+
+// Highlight the currently playing song
+function highlightCurrentSong(index) {
+  document.querySelectorAll(".card").forEach((card, i) => {
+    card.style.backgroundColor = i === index ? "#ccc" : "transparent";
   });
 }
 
@@ -124,7 +128,7 @@ progressBar.addEventListener("input", () => {
 playPauseBtn.addEventListener("click", () => {
   if (audioPlayer.paused) {
     audioPlayer.play();
-    playPauseBtn.src = "./assets/pause_icon.png"; // Pause icon
+    playPauseBtn.src = "./assets/images (1).png"; // Pause icon
   } else {
     audioPlayer.pause();
     playPauseBtn.src = "./assets/player_icon3.png"; // Play icon
@@ -141,6 +145,11 @@ nextBtn.addEventListener("click", () => {
 prevBtn.addEventListener("click", () => {
   currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length; // Loop to last song if first
   playSong(currentSongIndex);
+});
+
+// Auto-play next song when current song ends
+audioPlayer.addEventListener("ended", () => {
+  nextBtn.click();
 });
 
 // Render songs dynamically
